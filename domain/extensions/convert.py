@@ -15,7 +15,7 @@ def to_flight(html: BeautifulSoup) -> list[Flight]:
         route = spans[5].text.split('     ')[0].strip().replace('ПУЛКОВО-1 / ', '').split(' / ')
         airports = []
         for airport in route:
-            airports.append(airport[0][:1] + airport[0][1:].lower())
+            airports.append(airport[:1] + airport[1:].lower())
         arrival_datetime = datetime.strptime(spans[5].text.split('[прил. ')[1][:16], '%d.%m.%Y %H:%M')
         flight_number = spans[3].text.replace('ФВ', 'FV')
         plane_model = spans[4].text

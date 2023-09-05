@@ -12,15 +12,27 @@ class CalendarEvent:
     end: datetime
     color: int
 
-    def __init__(self, flight: Flight):
+    def __init__(self, event: Flight | Reserve | WorkEvent):
+
+        if type(event) == Flight:
+            self.__create_flight(event)
+        elif type(event) == Reserve:
+            self.__create_reserve(event)
+        elif type(event) == WorkEvent:
+            self.__create_work_event(event)
+
+    def __create_flight(self, flight: Flight):
         if len(flight.airports) > 2:
             self.summary = f"Командировка в {flight.airports[0]}"
         else:
             self.summary = f"Полёт в {flight.airports[0]}"
+        airports = flight.airports[0][:1] + flight.airports[0][1:].lower()
+        for i in range(1, len(flight.airports)):
+            airports += ', ' + flight.airports[i][:1] + flight.airports[i][1:].lower()
 
         time_in_flight = str(flight.arrival_date_time - flight.departure_date_time)[:-3]
 
-        self.description = f"Аэропорты: {flight.airports} \n" + \
+        self.description = f"Аэропорты: {airports} \n" + \
                            f"Номера полетов: {flight.flight_number} \n" + \
                            f"Самолёт: {flight.plane_model} \n" + \
                            f"Вылет: {flight.departure_date_time.strftime('%Y-%m-%d %H:%M')} \n" + \
@@ -38,14 +50,14 @@ class CalendarEvent:
         else:
             self.color = 7
 
-    def __init__(self, reserve: Reserve):
+    def __create_reserve(self, reserve: Reserve):
         self.summary = "Резерв"
         self.description = reserve.info
         self.start = reserve.begin_date_time
         self.end = reserve.end_date_time
         self.color = 5
 
-    def __init__(self, event: WorkEvent):
+    def __create_work_event(self, event: WorkEvent):
         self.summary = event.info
         self.description = ""
         self.start = event.begin_date_time
