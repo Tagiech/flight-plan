@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from domain.flight import Flight
 from domain.reserve import Reserve
@@ -30,7 +30,13 @@ class CalendarEvent:
         self.start = flight.departure_date_time - datetime.timedelta(hours=2)
         self.end = flight.arrival_date_time
 
-        self.color = 7
+        start_distance_from_day_begin = self.start - datetime(self.start.year, self.start.month, self.start.day)
+        begin_gap = timedelta(seconds=0 * 60 * 60 + 30 * 60)
+        end_gap = timedelta(seconds=5 * 60 * 60 + 30 * 60)
+        if begin_gap < start_distance_from_day_begin < end_gap:
+            self.color = 10
+        else:
+            self.color = 7
 
     def __init__(self, reserve: Reserve):
         self.summary = "Резерв"
