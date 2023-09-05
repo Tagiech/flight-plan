@@ -1,14 +1,15 @@
 from datetime import datetime
 
+
 class Reserve:
-    BeginDateTime: datetime
-    EndDateTime: datetime
-    Info: str
+    begin_date_time: datetime
+    end_date_time: datetime
+    info: str
 
     def __init__(self,
-                 beginDateTime: datetime,
-                 endDateTime: datetime,
+                 begin_date_time: datetime,
+                 end_date_time: datetime,
                  info: str):
-        self.Info = info
-        self.BeginDateTime = beginDateTime
-        self.EndDateTime = endDateTime
+        self.info = info
+        self.begin_date_time = begin_date_time
+        self.end_date_time = end_date_time

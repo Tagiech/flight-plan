@@ -2,20 +2,20 @@ from datetime import datetime
 
 
 class Flight:
-    DepartureDateTime: datetime
-    ArrivalDateTime: datetime
-    FlightNumber: str
-    PlaneModel: str
-    Airports: list[str]
+    departure_date_time: datetime
+    arrival_date_time: datetime
+    flight_number: str
+    plane_model: str
+    airports: list[str]
 
     def __init__(self,
-                 departureDateTime: datetime,
-                 arrivalDateTime: datetime,
-                 flightNumber: str,
-                 planeModel: str,
+                 departure_date_time: datetime,
+                 arrival_date_time: datetime,
+                 flight_number: str,
+                 plane_model: str,
                  airports: list[str]):
-        self.DepartureDateTime = departureDateTime
-        self.ArrivalDateTime = arrivalDateTime
-        self.FlightNumber = flightNumber
-        self.PlaneModel = planeModel
-        self.Airports = airports
+        self.departure_date_time = departure_date_time
+        self.arrival_date_time = arrival_date_time
+        self.flight_number = flight_number
+        self.plane_model = plane_model
+        self.airports = airports

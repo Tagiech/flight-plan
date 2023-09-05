@@ -6,55 +6,55 @@ from domain.work_event import WorkEvent
 
 
 class CalendarEvent:
-    Summary: str
-    Description: str
-    Start: datetime
-    End: datetime
-    Color: int
+    summary: str
+    description: str
+    start: datetime
+    end: datetime
+    color: int
 
     def __init__(self, flight: Flight):
-        if len(flight.Airports) > 2:
-            self.Summary = f"Командировка в {flight.Airports[0]}"
+        if len(flight.airports) > 2:
+            self.summary = f"Командировка в {flight.airports[0]}"
         else:
-            self.Summary = f"Полёт в {flight.Airports[0]}"
+            self.summary = f"Полёт в {flight.airports[0]}"
 
-        time_in_flight = str(flight.ArrivalDateTime - flight.DepartureDateTime)[:-3]
+        time_in_flight = str(flight.arrival_date_time - flight.departure_date_time)[:-3]
 
-        self.Description = f"Аэропорты: {flight.Airports} \n" + \
-                           f"Номера полетов: {flight.FlightNumber} \n" + \
-                           f"Самолёт: {flight.PlaneModel} \n" + \
-                           f"Вылет: {flight.DepartureDateTime.strftime('%Y-%m-%d %H:%M')} \n" + \
-                           f"Прилёт: {flight.ArrivalDateTime.strftime('%Y-%m-%d %H:%M')} \n" + \
+        self.description = f"Аэропорты: {flight.airports} \n" + \
+                           f"Номера полетов: {flight.flight_number} \n" + \
+                           f"Самолёт: {flight.plane_model} \n" + \
+                           f"Вылет: {flight.departure_date_time.strftime('%Y-%m-%d %H:%M')} \n" + \
+                           f"Прилёт: {flight.arrival_date_time.strftime('%Y-%m-%d %H:%M')} \n" + \
                            f"Время в рейсе: {time_in_flight}"
 
-        self.Start = flight.DepartureDateTime - datetime.timedelta(hours=2)
-        self.End = flight.ArrivalDateTime
+        self.start = flight.departure_date_time - datetime.timedelta(hours=2)
+        self.end = flight.arrival_date_time
 
-        self.Color = 7
+        self.color = 7
 
     def __init__(self, reserve: Reserve):
-        self.Summary = "Резерв"
-        self.Description = reserve.Info
-        self.Start = reserve.BeginDateTime
-        self.End = reserve.EndDateTime
-        self.Color = 5
+        self.summary = "Резерв"
+        self.description = reserve.info
+        self.start = reserve.begin_date_time
+        self.end = reserve.end_date_time
+        self.color = 5
 
     def __init__(self, event: WorkEvent):
-        self.Summary = event.Info
-        self.Description = ""
-        self.Start = event.BeginDateTime
-        self.End = event.EndDateTime
-        self.Color = 3
+        self.summary = event.info
+        self.description = ""
+        self.start = event.begin_date_time
+        self.end = event.end_date_time
+        self.color = 3
 
     def toJson(self):
         return {
-            'summary': self.Summary,
-            'description': self.Description,
-            'colorId': str(self.Color),
+            'summary': self.summary,
+            'description': self.description,
+            'colorId': str(self.color),
             'start': {
-                'dateTime': self.Start.astimezone().isoformat(),
+                'dateTime': self.start.astimezone().isoformat(),
             },
             'end': {
-                'dateTime': self.End.astimezone().isoformat(),
+                'dateTime': self.end.astimezone().isoformat(),
             }
         }
