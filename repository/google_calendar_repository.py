@@ -27,3 +27,8 @@ class GoogleCalendar(object):
                                                    timeMin=start,
                                                    orderBy='startTime').execute()
         return events_result.get('items', [])
+
+    def delete_event(self, event_id):
+        self.service.events().delete(calendarId=config.calendarId,
+                                     eventId=event_id,
+                                     sendNotifications=False).execute()
