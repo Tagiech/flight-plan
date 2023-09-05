@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from domain.flight import Flight
 from domain.reserve import Reserve
@@ -52,9 +52,9 @@ class CalendarEvent:
             'description': self.Description,
             'colorId': str(self.Color),
             'start': {
-                'dateTime': self.Start.strftime('%Y-%m-%dT%H:%M:00+03:00'),
+                'dateTime': self.Start.astimezone().isoformat(),
             },
             'end': {
-                'dateTime': self.End.strftime('%Y-%m-%dT%H:%M:00+03:00'),
+                'dateTime': self.End.astimezone().isoformat(),
             }
         }
