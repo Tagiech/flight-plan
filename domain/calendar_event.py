@@ -27,7 +27,7 @@ class CalendarEvent:
                            f"Прилёт: {flight.arrival_date_time.strftime('%Y-%m-%d %H:%M')} \n" + \
                            f"Время в рейсе: {time_in_flight}"
 
-        self.start = flight.departure_date_time - datetime.timedelta(hours=2)
+        self.start = flight.departure_date_time - timedelta(hours=2)
         self.end = flight.arrival_date_time
 
         start_distance_from_day_begin = self.start - datetime(self.start.year, self.start.month, self.start.day)
