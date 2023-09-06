@@ -31,8 +31,9 @@ def to_reserve(html: BeautifulSoup) -> list[Reserve]:
         tds = row.find_all('td')
         begin_datetime = datetime.strptime(tds[0].text, '%d.%m.%Y %H:%M')
         info = tds[1].text.replace('\xa0\n\t\t\t\t\t\t\t\t\t\t', ' ').split('[до ')[0].strip()
-        end_datetime = tds[1].text.replace('\xa0\n\t\t\t\t\t\t\t\t\t\t', ' ').split('[до ')[1][:16]
-        reserves.append(Reserve(begin_datetime, info, end_datetime))
+        end_datetime = datetime.strptime(tds[1].text.replace('\xa0\n\t\t\t\t\t\t\t\t\t\t', ' ').split('[до ')[1][:16],
+                                         '%d.%m.%Y %H:%M')
+        reserves.append(Reserve(begin_datetime, end_datetime, info))
 
     return reserves
 
