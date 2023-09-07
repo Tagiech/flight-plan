@@ -11,6 +11,11 @@ def to_flight(html: BeautifulSoup) -> list[Flight]:
     flights = []
     for row in html.find_all('tr'):
         spans = row.find_all('span')
+        try:
+            if spans[0]['class'][0] == 'plan_del':
+                continue
+        except KeyError:
+            pass
         departure_datetime = datetime.strptime(spans[0].text + ' ' + spans[1].text, '%d.%m.%Y %H:%M')
         route = spans[5].text.split('     ')[0].strip().replace('ПУЛКОВО-1 / ', '').split(' / ')
         airports = []
