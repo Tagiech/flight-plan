@@ -19,6 +19,9 @@ class WorkPlan(object):
         options.add_argument('--headless=new')
         self.service = webdriver.Chrome(options=options)
 
+    def close(self):
+        self.service.close()
+
     def getPlan(self, login, password) -> (list[Flight], list[Reserve], list[WorkEvent]):
 
         self.__login(login, password)

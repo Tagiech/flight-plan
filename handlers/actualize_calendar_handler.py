@@ -22,6 +22,8 @@ class ActualizeCalendarHandler(object):
         self.__check_for_deleted_flights(calendar_events, flights, reserves, work_events)
         self.__update_calendar_events(calendar_events, flights, reserves, work_events)
 
+        self._workplan_repository.close()
+
     def __update_calendar_events(self,
                                  calendar_events,
                                  flights: list[Flight],
