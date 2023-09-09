@@ -27,8 +27,14 @@ class CalendarEvent:
         else:
             self.summary = f"Полёт в {flight.airports[0]}"
         airports = flight.airports[0][:1] + flight.airports[0][1:].lower()
+        flight_numbers = flight.flight_number.replace('п', '').replace('FV', 'SU').split("/")
+        links = "Пулково-1 -> " + airports + ": https://flightradar24.com/" + flight_numbers[0] + "\n"
         for i in range(1, len(flight.airports)):
-            airports += ', ' + flight.airports[i][:1] + flight.airports[i][1:].lower()
+            previous_airport = (flight.airports[i - 1][:1] + flight.airports[i - 1][1:].lower()).replace(' [пас]', '')
+            next_airport = flight.airports[i][:1] + flight.airports[i][1:].lower()
+            airports += ', ' + next_airport
+            links += previous_airport + " -> " + next_airport + ": https://flightradar24.com/" + flight_numbers[
+                i] + "\n"
 
         time_in_flight = str(flight.arrival_date_time - flight.departure_date_time)[:-3]
 
@@ -37,7 +43,8 @@ class CalendarEvent:
                            f"Самолёт: {flight.plane_model} \n" + \
                            f"Вылет: {flight.departure_date_time.strftime('%Y-%m-%d %H:%M')} \n" + \
                            f"Прилёт: {flight.arrival_date_time.strftime('%Y-%m-%d %H:%M')} \n" + \
-                           f"Время в рейсе: {time_in_flight}"
+                           f"Время в рейсе: {time_in_flight} \n\n" + \
+                           f"Ссылки на трекер: \n{links}"
 
         self.start = flight.departure_date_time - timedelta(hours=2)
         self.end = flight.arrival_date_time
