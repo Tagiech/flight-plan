@@ -70,16 +70,20 @@ class ActualizeCalendarHandler(object):
                         reserves: list[Reserve],
                         work_events: list[WorkEvent]) -> bool:
         event_start_datetime = calendar_event['start'].get('dateTime', calendar_event['start'].get('date'))
+        event_end_datetime = calendar_event['end'].get('dateTime', calendar_event['end'].get('date'))
         for flight in flights:
             flight_start = (flight.departure_date_time - timedelta(hours=2)).astimezone().isoformat()
-            if event_start_datetime == flight_start:
+            flight_end = flight.arrival_date_time.astimezone().isoformat()
+            if event_start_datetime == flight_start and event_end_datetime == flight_end:
                 return True
         for reserve in reserves:
             reserve_start = reserve.begin_date_time.astimezone().isoformat()
-            if event_start_datetime == reserve_start:
+            reserve_end = reserve.end_date_time.astimezone().isoformat()
+            if event_start_datetime == reserve_start and event_end_datetime == reserve_end:
                 return True
         for work_event in work_events:
             work_event_start = work_event.begin_date_time.astimezone().isoformat()
-            if event_start_datetime == work_event_start:
+            work_event_end = work_event.end_date_time.astimezone().isoformat()
+            if event_start_datetime == work_event_start and event_end_datetime == work_event_end:
                 return True
         return False
