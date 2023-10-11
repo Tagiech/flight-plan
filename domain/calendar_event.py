@@ -26,12 +26,12 @@ class CalendarEvent:
             self.summary = f"Командировка в {flight.airports[0]}"
         else:
             self.summary = f"Полёт в {flight.airports[0]}"
-        airports = flight.airports[0][:1] + flight.airports[0][1:].lower()
         flight_numbers = flight.flight_number.replace('п', '').replace('FV', 'SU').split("/")
-        links = "Пулково -> " + airports + ": https://flightradar24.com/" + flight_numbers[0] + "\n"
+        links = "Пулково -> " + flight.airports[0] + ": https://flightradar24.com/" + flight_numbers[0] + "\n"
+        airports = flight.airports[0]
         for i in range(1, len(flight.airports)):
-            previous_airport = (flight.airports[i - 1][:1] + flight.airports[i - 1][1:].lower()).replace(' [пас]', '')
-            next_airport = flight.airports[i][:1] + flight.airports[i][1:].lower()
+            previous_airport = flight.airports[i - 1]
+            next_airport = flight.airports[i]
             airports += ', ' + next_airport
             links += previous_airport + " -> " + next_airport + ": https://flightradar24.com/" + flight_numbers[
                 i] + "\n"

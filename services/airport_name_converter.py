@@ -29,12 +29,16 @@ class AirportNameConverter:
             'ЕКАТЕРИН': 'Екатеринбург',
             'ЧИТА': 'Чита',
             'МАХАЧКАЛ': 'Махачкала',
-            'ВНУКОВО-А': 'Внуково',
+            'ВНУКОВО-A': 'Внуково',
             'НОВОСИБТ': 'Новосибирск',
             'ТАШКЕНТ-2': 'Ташкент',
             'МУРМАНСК': 'Мурманск',
             'ЕРЕВАНЗ': 'Ереван'
         }
 
-    def find_match(self, airport):
-        return self.__airport_name_match.get(airport, airport)
+    def find_match(self, airport: str):
+        if 'пас' in airport:
+            fixed_airport_name = self.__airport_name_match.get(airport.replace(' [пас]', ''), airport) + ' [пас]'
+        else:
+            fixed_airport_name = self.__airport_name_match.get(airport, airport)
+        return fixed_airport_name
