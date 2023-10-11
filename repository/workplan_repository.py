@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options
 
 from bs4 import BeautifulSoup as bs
 
-from domain.extensions import convert
+from domain.extensions.convert import HtmlConverter
 from domain.flight import Flight
 from domain.reserve import Reserve
 from domain.work_event import WorkEvent
@@ -18,6 +18,7 @@ class WorkPlan(object):
         options = Options()
         options.add_argument('--headless=new')
         self.service = webdriver.Chrome(options=options)
+        self._convert = HtmlConverter()
 
     def close(self):
         self.service.close()
@@ -58,7 +59,7 @@ class WorkPlan(object):
             element = self.service.find_element(By.XPATH,
                                                 '/html/body/div[3]/div/div[4]/div[2]/div[2]/table/tbody[2]')
             html = bs(element.get_attribute('innerHTML'), 'html.parser')
-            flights = convert.to_flight(html)
+            flights = self._convert.to_flight(html)
         except:
             return []
         return flights
@@ -68,7 +69,7 @@ class WorkPlan(object):
             element = self.service.find_element(By.XPATH,
                                                 '/html/body/div[3]/div/div[4]/div[3]/div[2]/table/tbody[1]')
             html = bs(element.get_attribute('innerHTML'), 'html.parser')
-            flights = convert.to_flight(html)
+            flights = self._convert.to_flight(html)
         except:
             return []
         return flights
@@ -78,7 +79,7 @@ class WorkPlan(object):
             element = self.service.find_element(By.XPATH,
                                                 '/html/body/div[3]/div/div[4]/div[4]/div[2]/table/tbody')
             html = bs(element.get_attribute('innerHTML'), 'html.parser')
-            reserves = convert.to_reserve(html)
+            reserves = self._convert.to_reserve(html)
         except:
             return []
         return reserves
@@ -87,7 +88,7 @@ class WorkPlan(object):
         try:
             element = self.service.find_element(By.XPATH, '/html/body/div[3]/div/div[4]/div[5]/div[2]/table/tbody')
             html = bs(element.get_attribute('innerHTML'), 'html.parser')
-            events = convert.to_work_event(html)
+            events = self._convert.to_work_event(html)
         except:
             return []
         return events

@@ -28,7 +28,7 @@ class CalendarEvent:
             self.summary = f"Полёт в {flight.airports[0]}"
         airports = flight.airports[0][:1] + flight.airports[0][1:].lower()
         flight_numbers = flight.flight_number.replace('п', '').replace('FV', 'SU').split("/")
-        links = "Пулково-1 -> " + airports + ": https://flightradar24.com/" + flight_numbers[0] + "\n"
+        links = "Пулково -> " + airports + ": https://flightradar24.com/" + flight_numbers[0] + "\n"
         for i in range(1, len(flight.airports)):
             previous_airport = (flight.airports[i - 1][:1] + flight.airports[i - 1][1:].lower()).replace(' [пас]', '')
             next_airport = flight.airports[i][:1] + flight.airports[i][1:].lower()
