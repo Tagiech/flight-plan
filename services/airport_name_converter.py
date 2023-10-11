@@ -37,8 +37,11 @@ class AirportNameConverter:
         }
 
     def find_match(self, airport: str):
+        airport_lower_case = airport[:1] + airport[1:].lower()
         if 'пас' in airport:
-            fixed_airport_name = self.__airport_name_match.get(airport.replace(' [пас]', ''), airport) + ' [пас]'
+            fixed_airport_name = self.__airport_name_match.get(
+                airport.replace(' [пас]', ''),
+                airport_lower_case) + ' [пас]'
         else:
-            fixed_airport_name = self.__airport_name_match.get(airport, airport)
+            fixed_airport_name = self.__airport_name_match.get(airport, airport_lower_case)
         return fixed_airport_name
