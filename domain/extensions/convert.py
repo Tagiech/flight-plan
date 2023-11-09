@@ -52,6 +52,11 @@ class HtmlConverter:
         events = []
         for row in html.find_all('tr'):
             spans = row.find_all('span')
+            try:
+                if spans[0]['class'][0] == 'plan_del':
+                    continue
+            except KeyError:
+                pass
             begin_datetime = datetime.strptime(spans[0].text + ' ' + spans[1].text, '%d.%m.%Y %H:%M')
             info = spans[2].text
             end_datetime = datetime.strptime(spans[4].text.split('[до ')[1][:16], '%d.%m.%Y %H:%M')
