@@ -1,6 +1,6 @@
+from time import sleep
+
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -34,7 +34,7 @@ class WorkPlan(object):
 
     def __login(self, login, password):
         try:
-            self.service.get('https://edu.rossiya-airlines.com/workplan')
+            self.service.get('https://edu.rossiya-airlines.com/')
 
             loginField = self.service.find_element(By.XPATH,
                                                    '/html/body/div[3]/div/div/div/form/fieldset/div[2]/input')
@@ -46,11 +46,12 @@ class WorkPlan(object):
             self.service.find_element(By.XPATH,
                                       '/html/body/div[3]/div/div/div/form/fieldset/div[5]/input').click()
 
-            WebDriverWait(self.service, 20).until(
-                expected_conditions.element_to_be_clickable(
-                    (By.XPATH, '/html/body/div[3]/div/div[1]/form[1]/div/div[4]/input')))
-        except:
-            raise Exception("Login failed")
+            self.__wait_for_page_to_load()
+            self.__pass_change_password_alert()
+            workplan_link = self.service.find_element(By.XPATH, '/html/body/div[3]/div/ul/li[3]/a')
+            workplan_link.click()
+        except BaseException:
+            raise
 
     def __get_events(self) -> (list[Flight], list[Reserve], list[WorkEvent]):
         flights: list[Flight] = []
@@ -99,3 +100,35 @@ class WorkPlan(object):
         except:
             return []
         return events
+
+    def __wait_for_page_to_load(self):
+        seconds = 0
+        while True:
+            try:
+                workplan_link_element = self.service.find_element(By.XPATH,
+                                                                  '/html/body/div[3]/div/div[1]/form[1]/div/div[4]/input')
+                workplan_is_visible = workplan_link_element.is_displayed()
+            except:
+                workplan_is_visible = False
+            try:
+                modal_element = self.service.find_element(By.XPATH, '/html/body/div[9]/div/div/div[1]/button')
+                modal_is_visible = modal_element.is_displayed()
+            except:
+                modal_is_visible = False
+
+            if workplan_is_visible or modal_is_visible:
+                return
+            else:
+                if seconds >= 30:
+                    raise Exception("Login failed due to wait timeout")
+                else:
+                    seconds += 0.5
+                    sleep(0.5)
+
+    def __pass_change_password_alert(self):
+        try:
+            modal_element = self.service.find_element(By.XPATH, '/html/body/div[9]')
+            if modal_element:
+                (modal_element.find_element(By.CSS_SELECTOR, 'button.bootbox-close-button.close')).click()
+        except:
+            pass
