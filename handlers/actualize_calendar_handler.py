@@ -7,29 +7,35 @@ from domain.reserve import Reserve
 from domain.work_event import WorkEvent
 from repository.google_calendar_repository import GoogleCalendar
 from repository.workplan_repository import WorkPlan
+from services.telegram_logger import TelegramLogger
 
 
 class ActualizeCalendarHandler(object):
 
     def __init__(self):
-        self._calendar_repository = GoogleCalendar()
-        self._workplan_repository = WorkPlan()
+        self.__calendar_repository = GoogleCalendar()
+        self.__workplan_repository = WorkPlan()
+        self.__logger = TelegramLogger()
 
     def handle(self):
-        calendar_events = self._calendar_repository.get_events_list()
-        flights, reserves, work_events = self._workplan_repository.getPlan(login, password)
+        calendar_events = self.__calendar_repository.get_events_list()
+        flights, reserves, work_events = self.__workplan_repository.getPlan(login, password)
 
-        self.__check_for_deleted_flights(calendar_events, flights, reserves, work_events)
-        self.__update_calendar_events(calendar_events, flights, reserves, work_events)
+        deleted_events_qty = self.__check_for_deleted_flights(calendar_events, flights, reserves, work_events)
+        created_events_qty = self.__update_calendar_events(calendar_events, flights, reserves, work_events)
 
-        self._workplan_repository.close()
+        if created_events_qty + deleted_events_qty > 0:
+            self.__logger.log_changes_in_calendar(created_events_qty, deleted_events_qty)
+
+        self.__workplan_repository.close()
 
     def __update_calendar_events(self,
                                  calendar_events,
                                  flights: list[Flight],
                                  reserves: list[Reserve],
-                                 work_events: list[WorkEvent]):
-        events = []
+                                 work_events: list[WorkEvent]) -> int:
+        events: list[CalendarEvent] = []
+        created_events_qty: int = 0
 
         for flight in flights:
             events.append(CalendarEvent(flight))
@@ -40,7 +46,9 @@ class ActualizeCalendarHandler(object):
 
         for event in events:
             if not self.__event_exists(event, calendar_events):
-                self._calendar_repository.create_event(event.toJson())
+                self.__calendar_repository.create_event(event.toJson())
+                created_events_qty += 1
+        return created_events_qty
 
     def __event_exists(self,
                        event: CalendarEvent,
@@ -57,12 +65,15 @@ class ActualizeCalendarHandler(object):
                                     calendar_events,
                                     flights: list[Flight],
                                     reserves: list[Reserve],
-                                    work_events: list[WorkEvent]):
+                                    work_events: list[WorkEvent]) -> int:
+        deleted_events_qty: int = 0
         for calendar_event in calendar_events:
             if self.__flight_exists(calendar_event, flights, reserves, work_events):
                 pass
             else:
-                self._calendar_repository.delete_event(calendar_event['id'])
+                self.__calendar_repository.delete_event(calendar_event['id'])
+                deleted_events_qty += 1
+        return deleted_events_qty
 
     def __flight_exists(self,
                         calendar_event,
