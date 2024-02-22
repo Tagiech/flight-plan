@@ -110,7 +110,7 @@ class WorkPlan(object):
         while True:
             try:
                 workplan_link_element = self.__service.find_element(By.XPATH,
-                                                                  '/html/body/div[3]/div/div[1]/form[1]/div/div[4]/input')
+                                                                    '/html/body/div[3]/div/ul/li[3]/a')
                 workplan_is_visible = workplan_link_element.is_displayed()
             except:
                 workplan_is_visible = False

@@ -14,11 +14,11 @@ class CalendarEvent:
 
     def __init__(self, event: Flight | Reserve | WorkEvent):
 
-        if type(event) == Flight:
+        if type(event) is Flight:
             self.__create_flight(event)
-        elif type(event) == Reserve:
+        elif type(event) is Reserve:
             self.__create_reserve(event)
-        elif type(event) == WorkEvent:
+        elif type(event) is WorkEvent:
             self.__create_work_event(event)
 
     def __create_flight(self, flight: Flight):
