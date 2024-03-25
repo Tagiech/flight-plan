@@ -47,11 +47,17 @@ class WorkPlan(object):
 
             self.__service.find_element(By.XPATH,
                                       '/html/body/div[3]/div/div/div/form/fieldset/div[5]/input').click()
-
             self.__wait_for_page_to_load()
+
             self.__pass_change_password_alert()
+
+            workplan_is_blocked = self.__check_is_workplan_is_blocked()
+            if workplan_is_blocked:
+                raise Exception("Workplan is blocked. To unlock you need to read the documents/pass tests")
+
             workplan_link = self.__service.find_element(By.XPATH, '/html/body/div[3]/div/ul/li[3]/a')
             workplan_link.click()
+
         except BaseException as exc:
             self.__service.save_screenshot("image.png")
             self.__logger.log_exception_with_image(exc, "image.png")
@@ -119,8 +125,14 @@ class WorkPlan(object):
                 modal_is_visible = modal_element.is_displayed()
             except:
                 modal_is_visible = False
+            try:
+                workplan_blocked_element = self.__service.find_element(By.CLASS_NAME,
+                                                                       'head__workplan-blocked-message')
+                workplan_blocked_is_visible = workplan_blocked_element.is_displayed()
+            except:
+                workplan_blocked_is_visible = False
 
-            if workplan_is_visible or modal_is_visible:
+            if workplan_is_visible or modal_is_visible or workplan_blocked_is_visible:
                 return
             else:
                 if seconds >= 30:
@@ -136,3 +148,11 @@ class WorkPlan(object):
                 (modal_element.find_element(By.CSS_SELECTOR, 'button.bootbox-close-button.close')).click()
         except:
             pass
+
+    def __check_is_workplan_is_blocked(self) -> bool:
+        try:
+            workplan_blocked_element = self.__service.find_element(By.CLASS_NAME,
+                                                                   'head__workplan-blocked-message')
+            return workplan_blocked_element.is_displayed()
+        except:
+            return False
