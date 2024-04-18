@@ -30,7 +30,7 @@ class CalendarEvent:
         links = "Пулково -> " + flight.airports[0] + ": https://flightradar24.com/" + flight_numbers[0] + "\n"
         airports = flight.airports[0]
         for i in range(1, len(flight.airports)):
-            previous_airport = flight.airports[i - 1]
+            previous_airport = (flight.airports[i - 1]).replace(' [пас]', '')
             next_airport = flight.airports[i]
             airports += ', ' + next_airport
             links += previous_airport + " -> " + next_airport + ": https://flightradar24.com/" + flight_numbers[
